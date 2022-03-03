@@ -131,7 +131,7 @@ function Bookcomp(props){
       ) : (
         <h1></h1>
       )}
-      {props.rank == "Employee" ? (
+      {props.rank == "Employee" ? (       
                <div>
           <button onClick={authPurchase}>Yes</button>
           <button >Suspend Request</button>

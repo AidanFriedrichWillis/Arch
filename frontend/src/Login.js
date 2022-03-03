@@ -1,5 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
@@ -40,17 +40,18 @@ async function loginUser(event){
 
 
     <div>
+  <div className="col-md-12">
+    <div classname="card card-container">
 
-      <form onSubmit={loginUser} class="form-horizontal">
+      <form onSubmit={loginUser} className="form-horizontal">
       <div className="form-group">
-    <label className="control-label col-sm-2" for="email">UserName:</label>
-    <div className="col-sm-10">
+    <label className="sr-only" for="email">UserName:</label>
 
     <input className="form-control" id="usernameid"
     input value={username} 
     onChange={(e) => setUsername(e.target.value)}
     type="text" placeholder='username'/>
-    </div>
+    
   </div>
   <div  className="form-group">
     <label label className="control-label col-sm-2" for="pwd">Password:</label>
@@ -60,13 +61,15 @@ async function loginUser(event){
   </div>
   <div className="form-group">
     <div className="col-sm-offset-2 col-sm-10">
-      <button type="submit" className="btn btn-default">Submit</button>
+      <button type="submit" className="btn btn-lg btn-primary btn-block">Submit</button>
     </div>
   </div>
 
 
       </form>
 
+    </div>
+  </div>
 
 
     </div>
