@@ -28,6 +28,10 @@ const bookSchema = new Schema({
   denied:{
     type: Boolean,
     required: false,
+  },
+  moreInfo:{
+    type: Boolean,
+    required: false,
   }
 
 

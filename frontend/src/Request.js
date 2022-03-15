@@ -11,6 +11,7 @@ function Request() {
     const[auth,setAuth] = React.useState(false);
     const[toExpensive,settoExpensive] = React.useState(false);
      const[denied,setDenied] = React.useState(false);
+     const [moreInfo, setmoreInfo] = React.useState(false);
 
 
 
@@ -28,6 +29,7 @@ function Request() {
                 await setAuth(false);
                 await settoExpensive(false)
                 await setDenied(false)
+                await setmoreInfo(false);
                 const response = await fetch('http://localhost:5000/Books/add/',{
                     method: 'POST',
                     headers:{
@@ -41,6 +43,7 @@ function Request() {
                         toExpensive,
                         token,
                         denied,
+                        moreInfo,
                     }),
                   })
                   const data = await response.json()

@@ -115,10 +115,17 @@ function Bookcomp(props){
 
     return (
         <div>
-            <h1>
+            {/* <h1>
             {"Title:  " + props.book.bookName + "   Cost:  " + props.book.cost  + "    Autherised: " + props.book.auth + " Denied: " + props.book.denied }
             
-            </h1>
+            </h1> */}
+    <tr>
+      <td>{props.book.bookName}</td>
+      <td>{props.book.cost}</td>
+      <td>{props.book.auth}</td>
+      <td>{props.book.denied}</td>
+
+    </tr>
             {props.rank == "Admin" ? (
                <div>
                    <h1>{"Is too expensive  " + props.book.toExpensive}
@@ -150,7 +157,7 @@ function Bookcomp(props){
         <h1></h1>
       )}
 
-        </div>
+    </div>
     );
 }
 export default Bookcomp;
