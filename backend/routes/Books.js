@@ -113,6 +113,57 @@ router.route("/denied").post(async (req, res) => {
     (err) => res.status(401).json(err);
   }
 });
+router.route("/moreInfo").post(async (req, res) => {
+  const decodeT = jwt.verify(req.body.token, "Yasuo123");
+  if (decodeT) {
+    const user = jwt.decode(req.body.token);
+
+    if (user.rank == "Employee") {
+      try {
+        const book = await Book.findOne({
+          _id: req.body._id,
+        });
+        book.moreInfo = true;
+        await book.save();
+        res.send(book);
+      } catch {
+        res.send({ error: "failed to update info" });
+      }
+    } else {
+      res.send({ error: "You are not an Employee" });
+    }
+  } else {
+    (err) => res.status(401).json(err);
+  }
+});
+
+router.route("/find").post(async (req, res) => {
+  const decodeT = jwt.verify(req.body.token, "Yasuo123");
+  if (decodeT) {
+      Book.find({ userid: req.body.userid, bookName : req.body.bookName})
+        .then((books) => res.json(books))
+        .catch((err) => res.status(400).json("Error: " + err));
+    
+  } else {
+    (err) => res.status(401).json(err);
+  }
+});
+// router.route("/find").post(async (req, res) => {
+//   const decodeT = jwt.verify(req.body.token, "Yasuo123");
+//   if (decodeT) {
+//     const returnb = await Book.find({
+//       userid: req.body.userid,
+//     });
+
+//     if (returnb) {
+//       return res.json(returnb);
+//     } else {
+//       res.json("no book");
+//     }
+//   } else {
+//     (err) => res.status(401).json(err);
+//   }
+// });
 
 router.route("/").get((req, res) => {
   Book.find({ auth: false, toExpensive: false })

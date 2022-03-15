@@ -5,22 +5,30 @@ import jwtDecode from "jwt-decode";
 import Bookcomp from "Bookcomp";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-
+import ClientTable from 'ClientTable';
 function Books() {
   const [userid, setUserid] = React.useState("");
-  const [bookslist, setBooks] = React.useState([]);
+  let [bookName, setBookName] = React.useState("");
+  let [bookslist, setBooks] = React.useState([]);
+  let [searchTerm, setSearchTerm] = React.useState("");
   const [rank, setRank] = React.useState("");
 
-  React.useEffect(() => {
-    userss();
-    if (rank == "Client") {
-      returnBookss();
-    } else if (rank == "Employee") {
-      returnUnauthBooks();
-    } else if (rank == "Admin") {
-      returnExpensiveBooks();
-    }
-  }, [userid]);
+  React.useEffect(
+    () => {
+      userss();
+      if (rank == "Client") {
+        returnBookss();
+      } else if (rank == "Employee") {
+        returnUnauthBooks();
+      } else if (rank == "Admin") {
+        returnExpensiveBooks();
+      }
+    },
+    [userid],
+    [bookName],
+    [bookslist],
+    [searchTerm]
+  );
 
   async function userss() {
     const token = localStorage.getItem("token");
@@ -30,9 +38,57 @@ function Books() {
     console.log(userid);
     setRank(newuser.rank);
   }
+
+  async function makeTooExpensivee(_id) {
+    await console.log("ahhhhhhhhhh: " + _id);
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:5000/Books/change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _id,
+        token,
+      }),
+    });
+    const data = await response.json();
+    if (data) {
+      console.log(data);
+    } else {
+      console.log("no response");
+    }
+    window.location.reload(false);
+
+  }
+
+  async function authPurchase(_id) {
+    await console.log("ahhhhhhhhhh: " + _id);
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:5000/Books/changeAuth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _id,
+        token,
+      }),
+    });
+    const data = await response.json();
+    if (data) {
+      console.log(data);
+    } else {
+      console.log("no response");
+    }
+    window.location.reload(false);
+
+  }
+
   async function returnUnauthBooks() {
     console.log("HEllo");
-
     const response = await fetch("http://localhost:5000/Books/", {
       method: "GET",
     });
@@ -82,52 +138,7 @@ function Books() {
     }
   }
 
-  async function makeTooExpensivee(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
-
-    const token = localStorage.getItem("token");
-
-    const response = await fetch("http://localhost:5000/Books/change", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        _id,
-        token,
-      }),
-    });
-    const data = await response.json();
-    if (data) {
-      console.log(data);
-    } else {
-      console.log("no response");
-    }
-  }
-
-  async function authPurchase(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
-
-    const token = localStorage.getItem("token");
-
-    const response = await fetch("http://localhost:5000/Books/changeAuth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        _id,
-        token,
-      }),
-    });
-    const data = await response.json();
-    if (data) {
-      console.log(data);
-    } else {
-      console.log("no response");
-    }
-  }
-
+  
   async function deney(_id) {
     await console.log("ahhhhhhhhhh: " + _id);
 
@@ -149,24 +160,60 @@ function Books() {
     } else {
       console.log("no response");
     }
+    window.location.reload(false);
+
+  }
+
+  async function requestInfo(_id) {
+    await console.log("ahhhhhhhhhh: " + _id);
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:5000/Books/moreInfo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _id,
+        token,
+      }),
+    });
+    const data = await response.json();
+    if (data) {
+      console.log(data);
+    } else {
+      console.log("no response");
+    }
+    window.location.reload(false);
+
   }
 
   function renderTableData() {
-    return bookslist.map((book) => {
-      const { bookName, cost, auth, denied, _id } = book;
+    return bookslist.filter((book)=>{
+        if(searchTerm == ""){
+          return book;
+        }
+        else if(book.bookName.toLowerCase().includes(searchTerm.toLowerCase())){
+          return book;
+        }
+
+
+    }).map((book) => {
+      const { bookName, cost, auth, denied, _id, moreInfo } = book;
 
       return (
         <tr>
-          <td>{bookName}</td>
-          <td>{cost}</td>
-          {rank == "Client" && (
+          {rank == "Client" && !auth && !denied && (
             <>
-              <td>{auth.toString()}</td>
-              <td>{denied.toString()}</td>
+              <td>{bookName}</td>
+              <td>{cost}</td>
             </>
           )}
-          {rank == "Employee" && (
+          {rank == "Employee" && !moreInfo && (
             <>
+              <td>{bookName}</td>
+              <td>{cost}</td>
               <td>USERNAME</td>
               <td>
                 <Button variant="success" onClick={() => authPurchase(_id)}>
@@ -178,10 +225,17 @@ function Books() {
                   REQUEST ADMIN PERMISSION
                 </Button>
               </td>
+              <td>
+                <Button variant="danger" onClick={() => requestInfo(_id)}>
+                  REQUEST INFO
+                </Button>
+              </td>
             </>
           )}
           {rank == "Admin" && (
             <>
+              <td>{bookName}</td>
+              <td>{cost}</td>
               <td>USERNAME</td>
               <td>
                 <Button
@@ -220,22 +274,22 @@ function Books() {
       );
     });
   }
-function needsMoreInfoTable() {
-  return bookslist.map((book) => {
-    const { bookName, cost, denied, moreInfo } = book;
+  function needsMoreInfoTable() {
+    return bookslist.map((book) => {
+      const { bookName, cost, denied, moreInfo } = book;
 
-    return (
-      <tr>
-        {moreInfo && (
-          <>
-            <td>{bookName}</td>
-            <td>{cost}</td>
-          </>
-        )}
-      </tr>
-    );
-  });
-}
+      return (
+        <tr>
+          {moreInfo && (
+            <>
+              <td>{bookName}</td>
+              <td>{cost}</td>
+            </>
+          )}
+        </tr>
+      );
+    });
+  }
 
   function acceptedPurchasesTable() {
     return bookslist.map((book) => {
@@ -255,25 +309,37 @@ function needsMoreInfoTable() {
     });
   }
 
-  
   return (
     <div>
-      {rank == "Client" ? (
+      <div className="col-md-12">
+        <div classname="card card-container">
+          <form className="form-horizontal">
+            <div className="form-group">
+              <label className="sr-only" for="email">
+                Book Name:
+              </label>
+              <input
+                className="form-control"
+                id="searchTerm"
+                input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                type="text"
+                placeholder="searchTerm"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+      {rank == "Client" && (
         <h1>You are a client, these are your requested books:</h1>
-      ) : (
-        <h1></h1>
       )}
 
-      {rank == "Employee" ? (
-        <h1>You are a emp, These are all the reqyests from Clients:</h1>
-      ) : (
-        <h1></h1>
+      {rank == "Employee" && (
+        <h1>You are a Employee, These are all the requests from Clients:</h1>
       )}
-
-      {rank == "Admin" ? (
-        <h1>You are a admin, here are all the unautherised Books: </h1>
-      ) : (
-        <h1></h1>
+      {rank == "Admin" && (
+        <h1>You are an admin, here are all the unautherised Books: </h1>
       )}
 
       <h1></h1>
@@ -283,8 +349,6 @@ function needsMoreInfoTable() {
             <tr>
               <th>Book Name</th>
               <th>Cost</th>
-              <th>Is Autherised By Employee</th>
-              <th>Is Too Expensive by Admin</th>
             </tr>
           )}
           {rank == "Employee" && (
@@ -309,7 +373,8 @@ function needsMoreInfoTable() {
         </thead>
         <tbody>{renderTableData()}</tbody>
       </Table>
-      <h1>Needs more Information</h1>
+
+      {rank == "Client" && <h1>Needs more Information</h1>}
       <Table striped bordered hover>
         <thead>
           {rank == "Client" && (
@@ -321,7 +386,7 @@ function needsMoreInfoTable() {
         </thead>
         <tbody>{needsMoreInfoTable()}</tbody>
       </Table>
-      <h1>Denied Purchases</h1>
+      {rank == "Client" && <h1>Denied Purchases</h1>}
       <Table striped bordered hover>
         <thead>
           {rank == "Client" && (
@@ -334,7 +399,7 @@ function needsMoreInfoTable() {
         </thead>
         <tbody>{deniedPurchasesTable()}</tbody>
       </Table>
-      <h1>Accepted Purchases</h1>
+      {rank == "Client" && <h1>Accepted Purchases</h1>}
       <Table striped bordered hover>
         <thead>
           {rank == "Client" && (
