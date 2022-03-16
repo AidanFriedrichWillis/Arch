@@ -26,9 +26,10 @@ function AdminCMS() {
 
     const response = await fetch("http://localhost:5000/users/", {
       method: "GET",
-      headers: {
-        "x-access-token": token,
-      },
+      headers:{
+          Authorization: token,
+      }
+    
     });
     const data = await response.json();
     if (data) {

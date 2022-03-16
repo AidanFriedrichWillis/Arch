@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var booksController = require("../controllers/books.controller");
-var authController = require("../controllers/auth.controller");
+var authController = require("../middleware/auth.controller");
 
 router.post("/add", authController.validToken, booksController.add);
 

@@ -13,10 +13,20 @@ function App(props) {
   });
 
  async function deleteAcount(_id){
+         const token = localStorage.getItem("token");
 
-        // fetch(`http://localhost:5000/users/${_id}`, {
-        //   method: "DELETE",
-        // });
+   const response =  await fetch("http://localhost:5000/users/delete/" + _id, {
+      method: "DELETE",
+      headers: {
+        Authorization: token,
+      },
+    });
+    const data = await response.json();
+    if (data) {
+      console.log(data);
+    } else {
+      console.log("no response");
+    }
 
  }
 
