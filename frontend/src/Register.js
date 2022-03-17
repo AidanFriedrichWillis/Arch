@@ -8,12 +8,11 @@ import React from "react";
 // import { Button } from '../node_modules/bootstrap/dist/js/bootstrap';
 import { Button } from 'bootstrap';
 
-function App() {
+function App(props) {
 
   const[username,setUsername] =  React.useState('');
   const[password,setPassword] =  React.useState('');
   const[rank,setRank] = React.useState('');
-
 
 async function registerUser(event){
   event.preventDefault();
@@ -31,7 +30,8 @@ async function registerUser(event){
     });
     const data = await response.json()
     console.log(data)
-    window.location.href = '/login'
+    if(props.getUsers){
+    props.getUsers();}
 
 }
 

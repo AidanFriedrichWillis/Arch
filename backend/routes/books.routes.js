@@ -9,8 +9,8 @@ router.post("/all", authController.validToken, booksController.alll);
 
 router.post(
   "/change",
-  authController.isEmployee || authController.isAdmin,
   authController.validToken,
+  authController.isEmployeeAdmin,
   booksController.change
 );
 router.post(
@@ -32,7 +32,21 @@ router.post(
   booksController.moreInfo
 );
 router.post("/find", authController.validToken, booksController.findone);
-router.get("/", booksController.findAll);
-router.get("/toExpensive", booksController.toExpensive);
+router.get(
+  "/",
+  authController.validToken,
+  authController.isEmployee,
+  booksController.findAll
+);
+router.get(
+  "/toExpensive",
+  authController.validToken,
+  authController.isAdmin,
+  booksController.toExpensive
+);
+router.put(
+    "/update/:id",
+    booksController.upDateBook
+);
 
 module.exports = router;

@@ -25,45 +25,47 @@ module.exports.signup = async (req, res) => {
 };
 
 module.exports.signin = async (req, res) => {
+  const user = await User.findOne({
+    username: req.body.username,
+  });
+  const token = jwt.sign(
+    {
+      username: req.body.username,
+      rank: user.rank,
+      id: user._id,
+    },
+    config.secret,
+    { expiresIn: 86400 }
+  );
 
-      const user = await User.findOne({
-        username: req.body.username,
-      });
-    const token = jwt.sign(
-      {
-        username: req.body.username,
-        rank: user.rank,
-        id: user._id,
-      },
-      config.secret
-    );
-
-    return res.json({ status: "ok", user: token });
-
+  return res.json({ status: "ok", user: token });
 };
 
-module.exports.deleteUser = async(req) =>{
-    console.log("delete");
-     const id = req.params._id;
+module.exports.deleteUser = async (req, res) => {
+  console.log("delete");
+  const id = req.params.id;
 
-     User.findByIdAndRemove(id)
-       .then((data) => {
-         if (!data) {
-           res.status(404).send({
-             message: `Cannot delete User with id=${id}. Maybe User was not found!`,
-           });
-         } else {
-           res.send({
-             message: "User was deleted successfully!",
-           });
-         }
-       })
-       .catch((err) => {
-         res.status(500).send({
-           message: "Could not delete User with id=" + id,
-         });
-       }); 
+  User.findByIdAndRemove(id)
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete User with id=${id}. Maybe User was not found!`,
+        });
+      } else {
+        res.send({
+          message: "User was deleted successfully!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete User with id=" + id,
+      });
+    });
+};
+
+module.exports.upDateUser = async (req, res) => {
+
 
 
 }
-

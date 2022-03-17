@@ -4,7 +4,6 @@ var bcrypt = require("bcryptjs");
 let User = require("../models/user");
 
 module.exports.validPass = async (req, res, next) => {
-    
   const user = await User.findOne({
     username: req.body.username,
   }).catch((err) => res.status(400).json("error" + err));
@@ -21,8 +20,8 @@ module.exports.validPass = async (req, res, next) => {
 };
 
 module.exports.validToken = async (req, res, next) => {
-    let token = req.body.token || req.headers.authorization;
-       if (!token) {
+  let token = req.body.token || req.headers.authorization;
+  if (!token) {
     return res.status(403).send({ message: "No token provided!" });
   }
 
@@ -33,28 +32,29 @@ module.exports.validToken = async (req, res, next) => {
     next();
   });
 };
-  
-  
 
 module.exports.isAdmin = async (req, res, next) => {
- 
-    const user = jwt.decode(req.body.token || req.headers.authorization);
-    if (user.rank == "Admin") {
-      return next();
-    } else {
-      res.send({ error: "NOT ADMIN ACCOUNT" });
-    }
- 
-
+  const user = jwt.decode(req.body.token || req.headers.authorization);
+  if (user.rank == "Admin") {
+    return next();
+  } else {
+    res.send({ error: "NOT ADMIN ACCOUNT" });
+  }
 };
 
 module.exports.isEmployee = async (req, res, next) => {
-    
-     
-    const user = jwt.decode(req.body.token || req.headers.authorization);
-    if (user.rank == "Employee") {
-      return next();
-    } else {
-      res.send({ error: "NOT EMPLOYEE ACCOUNT" });
-    }
+  const user = jwt.decode(req.body.token || req.headers.authorization);
+  if (user.rank == "Employee") {
+    return next();
+  } else {
+    res.send({ error: "NOT EMPLOYEE ACCOUNT" });
+  }
+};
+module.exports.isEmployeeAdmin = async (req, res, next) => {
+  const user = jwt.decode(req.body.token || req.headers.authorization);
+  if (user.rank == "Employee" || user.rank == "Admin") {
+    return next();
+  } else {
+    res.send({ error: "NOT EMPLOYEE/ADMIN ACCOUNT" });
+  }
 };

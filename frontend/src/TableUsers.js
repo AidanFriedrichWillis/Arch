@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-
+import Register  from "Register";
 function App(props) {
 
 
@@ -15,7 +15,7 @@ function App(props) {
  async function deleteAcount(_id){
          const token = localStorage.getItem("token");
 
-   const response =  await fetch("http://localhost:5000/users/delete/" + _id, {
+   const response =  await fetch("http://localhost:5000/users/" + _id, {
       method: "DELETE",
       headers: {
         Authorization: token,
@@ -27,6 +27,7 @@ function App(props) {
     } else {
       console.log("no response");
     }
+        window.location.reload(false);
 
  }
 
@@ -53,17 +54,19 @@ function App(props) {
     });
   }
   return (
-    <Table striped bordered hover>
-      <thead>
+    <>
+      <Table striped bordered hover>
+        <thead>
           <tr>
             <th>userID</th>
             <th>USerName</th>
             <th>Rank</th>
           </tr>
-        
-      </thead>
-      <tbody>{renderTableData()}</tbody>
-    </Table>
+        </thead>
+        <tbody>{renderTableData()}</tbody>
+      </Table>
+      <Register/>
+    </>
   );
 }
 

@@ -9,42 +9,19 @@ import Books from "Books";
 import Request from "Request";
 import SearchComp from 'SearchComp';
 import AdminCMS from "AdminCMS";
+import Navbar from "components/Navbar"
 function App() {
 
 
-	const token = localStorage.getItem('token')
-  console.log(token)
   
-
-  const [user, setUser] = React.useState(null);
-
 
 
 
   return (
     <div>
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <a href="/restaurants" className="navbar-brand">
-          IDK
-        </a>
-        <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/books"} className="nav-link">
-              Books
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to={"/request"} className="nav-link">
-              request
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to={"/register"} className="nav-link">
-              Register
-            </Link>
-          </li>
-        </div>
-      </nav>
+      
+
+      <Navbar/>
 
       <Routes>
         <Route path="/login" element={<Login />} />

@@ -1,5 +1,6 @@
 let Book = require("../models/book");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
 module.exports.add = async (req, res) => {
   const bookName = req.body.bookName;
@@ -100,7 +101,7 @@ module.exports.findone = async (req, res) => {
 };
 
 module.exports.findAll = async (req, res) => {
-  Book.find({ auth: false, toExpensive: false })
+  Book.find({ auth: false, toExpensive: false, moreInfo: false })
     .then((books) => res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
 };
@@ -109,4 +110,49 @@ module.exports.toExpensive = async (req, res) => {
   Book.find({ toExpensive: true })
     .then((books) => res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
+};
+
+module.exports.deleteWhere = async (req, res) => {
+  console.log("delete");
+  const id = req.params.id;
+
+  Book.find({ userid: id })
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete book with id=${id}. Maybe book was not found!`,
+        });
+      } else {
+        res.send({
+          message: "book was deleted successfully!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete book with id=" + id,
+      });
+    });
+};
+
+module.exports.upDateBook = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!",
+    });
+  }
+  const id = req.params.id;
+  const newname = req.body.bookName;
+  const cost = req.body.cost;
+  Book.findByIdAndUpdate(
+    id,
+    { bookName: newname, cost:cost ,moreInfo : false},
+    function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 };

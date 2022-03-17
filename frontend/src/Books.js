@@ -5,13 +5,15 @@ import jwtDecode from "jwt-decode";
 import Bookcomp from "Bookcomp";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import ClientTable from 'ClientTable';
+import Request from "Request";
 function Books() {
   const [userid, setUserid] = React.useState("");
   let [bookName, setBookName] = React.useState("");
   let [bookslist, setBooks] = React.useState([]);
   let [searchTerm, setSearchTerm] = React.useState("");
   const [rank, setRank] = React.useState("");
+  let [moreInfoRequest, setMoreInfoRequest] = React.useState(false);
+  let [currentBookID, setcurrentBookID] = React.useState(null);
 
   React.useEffect(
     () => {
@@ -61,7 +63,6 @@ function Books() {
       console.log("no response");
     }
     window.location.reload(false);
-
   }
 
   async function authPurchase(_id) {
@@ -84,13 +85,16 @@ function Books() {
       console.log("no response");
     }
     window.location.reload(false);
-
   }
 
   async function returnUnauthBooks() {
     console.log("HEllo");
+    const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:5000/Books/", {
       method: "GET",
+      headers: {
+        Authorization: token,
+      },
     });
     const data = await response.json();
     if (data) {
@@ -102,9 +106,13 @@ function Books() {
   }
   async function returnExpensiveBooks() {
     console.log("HEllo");
+    const token = localStorage.getItem("token");
 
     const response = await fetch("http://localhost:5000/Books/toExpensive", {
       method: "GET",
+      headers: {
+        Authorization: token,
+      },
     });
     const data = await response.json();
     if (data) {
@@ -138,7 +146,6 @@ function Books() {
     }
   }
 
-  
   async function deney(_id) {
     await console.log("ahhhhhhhhhh: " + _id);
 
@@ -161,12 +168,10 @@ function Books() {
       console.log("no response");
     }
     window.location.reload(false);
-
   }
 
   async function requestInfo(_id) {
     await console.log("ahhhhhhhhhh: " + _id);
-
     const token = localStorage.getItem("token");
 
     const response = await fetch("http://localhost:5000/Books/moreInfo", {
@@ -186,75 +191,83 @@ function Books() {
       console.log("no response");
     }
     window.location.reload(false);
-
   }
 
   function renderTableData() {
-    return bookslist.filter((book)=>{
-        if(searchTerm == ""){
+    return bookslist
+      .filter((book) => {
+        if (searchTerm == "") {
+          return book;
+        } else if (
+          book.bookName.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
           return book;
         }
-        else if(book.bookName.toLowerCase().includes(searchTerm.toLowerCase())){
-          return book;
-        }
+      })
+      .map((book) => {
+        const { bookName, cost, auth, denied, _id, moreInfo } = book;
 
+        return (
+          <tr>
+            {rank == "Client" && !auth && !denied && !moreInfo && (
+              <>
+                <td>{bookName}</td>
+                <td>{cost}</td>
+              </>
+            )}
+            {rank == "Employee" && !moreInfo && (
+              <>
+                <td>{bookName}</td>
+                <td>{cost}</td>
+                <td>USERNAME</td>
+                <td>
+                  <Button variant="success" onClick={() => authPurchase(_id)}>
+                    Click to Autherise for this user
+                  </Button>
+                </td>
+                <td>
+                  <Button
+                    variant="danger"
+                    onClick={() => makeTooExpensivee(_id)}
+                  >
+                    REQUEST ADMIN PERMISSION
+                  </Button>
+                </td>
+                <td>
+                  <Button variant="danger" onClick={() => requestInfo(_id)}>
+                    REQUEST INFO
+                  </Button>
+                </td>
+              </>
+            )}
+            {rank == "Admin" && (
+              <>
+                <td>{bookName}</td>
+                <td>{cost}</td>
+                <td>USERNAME</td>
+                <td>
+                  <Button
+                    variant="success"
+                    onClick={() => makeTooExpensivee(_id)}
+                  >
+                    ACCEPT REQUEST
+                  </Button>
+                </td>
+                <td>
+                  <Button variant="danger" onClick={() => deney(_id)}>
+                    DENEY REQUEST
+                  </Button>
+                </td>
+              </>
+            )}
+          </tr>
+        );
+      });
+  }
 
-    }).map((book) => {
-      const { bookName, cost, auth, denied, _id, moreInfo } = book;
-
-      return (
-        <tr>
-          {rank == "Client" && !auth && !denied && (
-            <>
-              <td>{bookName}</td>
-              <td>{cost}</td>
-            </>
-          )}
-          {rank == "Employee" && !moreInfo && (
-            <>
-              <td>{bookName}</td>
-              <td>{cost}</td>
-              <td>USERNAME</td>
-              <td>
-                <Button variant="success" onClick={() => authPurchase(_id)}>
-                  Click to Autherise for this user
-                </Button>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => makeTooExpensivee(_id)}>
-                  REQUEST ADMIN PERMISSION
-                </Button>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => requestInfo(_id)}>
-                  REQUEST INFO
-                </Button>
-              </td>
-            </>
-          )}
-          {rank == "Admin" && (
-            <>
-              <td>{bookName}</td>
-              <td>{cost}</td>
-              <td>USERNAME</td>
-              <td>
-                <Button
-                  variant="success"
-                  onClick={() => makeTooExpensivee(_id)}
-                >
-                  ACCEPT REQUEST
-                </Button>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => deney(_id)}>
-                  DENEY REQUEST
-                </Button>
-              </td>
-            </>
-          )}
-        </tr>
-      );
-    });
+  async function changeMoreInfoState(book) {
+    setMoreInfoRequest(!moreInfoRequest);
+    setcurrentBookID(book)
   }
 
   function deniedPurchasesTable() {
@@ -276,7 +289,7 @@ function Books() {
   }
   function needsMoreInfoTable() {
     return bookslist.map((book) => {
-      const { bookName, cost, denied, moreInfo } = book;
+      const { bookName, cost, denied, moreInfo, _id } = book;
 
       return (
         <tr>
@@ -284,6 +297,11 @@ function Books() {
             <>
               <td>{bookName}</td>
               <td>{cost}</td>
+              <td>
+                <Button onClick={() => changeMoreInfoState(book)}>
+                  AddMoreInfo
+                </Button>
+              </td>
             </>
           )}
         </tr>
@@ -381,11 +399,13 @@ function Books() {
             <tr>
               <th>Book Name</th>
               <th>Cost</th>
+              <th>More Info</th>
             </tr>
           )}
         </thead>
         <tbody>{needsMoreInfoTable()}</tbody>
       </Table>
+      {moreInfoRequest && <Request currentBookID={currentBookID} />}
       {rank == "Client" && <h1>Denied Purchases</h1>}
       <Table striped bordered hover>
         <thead>
