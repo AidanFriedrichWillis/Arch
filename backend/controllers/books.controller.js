@@ -1,6 +1,5 @@
 let Book = require("../models/book");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
 
 module.exports.add = async (req, res) => {
   const bookName = req.body.bookName;
@@ -26,9 +25,11 @@ module.exports.add = async (req, res) => {
     .catch((err) => res.status(400).json("book req Error: " + err));
 };
 
-module.exports.alll = async (req, res) => {
+module.exports.alll = async (req, res) => 
+{
+    const id = req.params.id;
   const returnb = await Book.find({
-    userid: req.body.userid,
+    userid: id,
   });
 
   if (returnb) {
@@ -38,9 +39,11 @@ module.exports.alll = async (req, res) => {
   }
 };
 module.exports.change = async (req, res) => {
+      const id = req.params.id;
+
   try {
     const book = await Book.findOne({
-      _id: req.body._id,
+      _id: id,
     });
     if (book.toExpensive) {
       book.toExpensive = false;
@@ -56,9 +59,11 @@ module.exports.change = async (req, res) => {
 };
 
 module.exports.changeAuth = async (req, res) => {
+   const id = req.params.id;
+
   try {
     const book = await Book.findOne({
-      _id: req.body._id,
+      _id: id,
     });
     book.auth = true;
     await book.save();
@@ -69,9 +74,11 @@ module.exports.changeAuth = async (req, res) => {
 };
 
 module.exports.denied = async (req, res) => {
+     const id = req.params.id;
+
   try {
     const book = await Book.findOne({
-      _id: req.body._id,
+      _id: id,
     });
     book.denied = true;
     await book.save();
@@ -81,9 +88,11 @@ module.exports.denied = async (req, res) => {
   }
 };
 module.exports.moreInfo = async (req, res) => {
+       const id = req.params.id;
+
   try {
     const book = await Book.findOne({
-      _id: req.body._id,
+      _id: id,
     });
     book.moreInfo = true;
     await book.save();
@@ -107,7 +116,7 @@ module.exports.findAll = async (req, res) => {
 };
 
 module.exports.toExpensive = async (req, res) => {
-  Book.find({ toExpensive: true })
+  Book.find({ toExpensive: true, denied : false })
     .then((books) => res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
 };
@@ -116,23 +125,14 @@ module.exports.deleteWhere = async (req, res) => {
   console.log("delete");
   const id = req.params.id;
 
-  Book.find({ userid: id })
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete book with id=${id}. Maybe book was not found!`,
-        });
-      } else {
-        res.send({
-          message: "book was deleted successfully!",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not delete book with id=" + id,
-      });
-    });
+ Book.deleteMany({ userid: id })
+   .then(function () {
+     console.log("Data deleted"); // Success
+   })
+   .catch(function (error) {
+     console.log(error); // Failure
+   });
+
 };
 
 module.exports.upDateBook = async (req, res) => {

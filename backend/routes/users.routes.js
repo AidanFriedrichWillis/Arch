@@ -11,6 +11,6 @@ router.post("/find",authController.validPass, userController.signin);
 router.get("/", authController.validToken, userController.findAll);
 
 router.delete("/:id", authController.validToken, userController.deleteUser);
-router.put("/:id", authController.validToken, userController.deleteUser);
+// router.put("/update", authController.validToken, userController);
 
 module.exports = router;

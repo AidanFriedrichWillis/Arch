@@ -13,12 +13,16 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "popper.js": "^1.16.1",
+    "query-string": "^7.1.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.2.0",
     "react-dom": "^17.0.2",
+    "react-emoji": "^0.5.0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "^5.0.0",
+    "react-scroll-to-bottom": "^4.2.0",
     "reactstrap": "^9.0.1",
+    "socket.io-client": "^4.4.1",
     "web-vitals": "^2.1.3"
   },
   "scripts": {

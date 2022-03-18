@@ -23,6 +23,21 @@ function AdminCMS() {
 
     }
   }
+  async function deleteBooksFromAccount(_id,token){
+
+    const response = await fetch("http://localhost:5000/Books/delete/" + _id, {
+      method: "DELETE",
+      headers: {
+        Authorization: token,
+      },
+    });
+    const data = await response.json();
+    if (data) {
+      console.log(data);
+    } else {
+      console.log("no response");
+    }
+  }
   async function deleteAcount(_id) {
     const token = localStorage.getItem("token");
 
@@ -38,6 +53,8 @@ function AdminCMS() {
     } else {
       console.log("no response");
     }
+    deleteBooksFromAccount(_id,token);
+    
         var filtered = userList.filter(function (value, index, arr) {
           return value._id != _id;
         });

@@ -7,9 +7,10 @@ import Register from 'Register'
 import jwtDecode from 'jwt-decode';
 import Books from "Books";
 import Request from "Request";
-import SearchComp from 'SearchComp';
 import AdminCMS from "AdminCMS";
 import Navbar from "components/Navbar"
+import Chat from 'Chat';
+import Join from 'Join';
 function App() {
 
 
@@ -19,9 +20,7 @@ function App() {
 
   return (
     <div>
-      
-
-      <Navbar/>
+      <Navbar />
 
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -29,8 +28,9 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/request" element={<Request />} />
         <Route path="/books" element={<Books />} />
-        <Route path="/search" element={<SearchComp />} />
         <Route path="/adminPage" element={<AdminCMS />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/join" element={<Join />} />
       </Routes>
     </div>
   );

@@ -46,15 +46,11 @@ function Books() {
 
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:5000/Books/change", {
-      method: "POST",
+    const response = await fetch(`http://localhost:5000/Books/change/${_id}`, {
+      method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        Authorization: token,
       },
-      body: JSON.stringify({
-        _id,
-        token,
-      }),
     });
     const data = await response.json();
     if (data) {
@@ -62,29 +58,36 @@ function Books() {
     } else {
       console.log("no response");
     }
-    window.location.reload(false);
+     var filtered = bookslist.filter(function (value, index, arr) {
+       return value._id != _id;
+     });
+     console.log(filtered);
+     setBooks(filtered);
   }
 
   async function authPurchase(_id) {
     await console.log("ahhhhhhhhhh: " + _id);
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:5000/Books/changeAuth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        _id,
-        token,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:5000/Books/changeAuth/${_id}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
     const data = await response.json();
     if (data) {
       console.log(data);
     } else {
       console.log("no response");
     }
-    window.location.reload(false);
+     var filtered = bookslist.filter(function (value, index, arr) {
+       return value._id != _id;
+     });
+     console.log(filtered);
+     setBooks(filtered);
   }
 
   async function returnUnauthBooks() {
@@ -105,9 +108,7 @@ function Books() {
     }
   }
   async function returnExpensiveBooks() {
-    console.log("HEllo");
     const token = localStorage.getItem("token");
-
     const response = await fetch("http://localhost:5000/Books/toExpensive", {
       method: "GET",
       headers: {
@@ -124,19 +125,16 @@ function Books() {
   }
 
   async function returnBookss() {
-    console.log("HEllo");
     const token = localStorage.getItem("token");
-
-    const response = await fetch("http://localhost:5000/Books/all", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userid,
-        token,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:5000/Books/allforuser/${userid}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
     const data = await response.json();
     if (data) {
       await setBooks(data);
@@ -147,19 +145,14 @@ function Books() {
   }
 
   async function deney(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
-
     const token = localStorage.getItem("token");
-
-    const response = await fetch("http://localhost:5000/Books/denied", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        _id,
-        token,
-      }),
+    const response = await fetch(`http://localhost:5000/Books/denied/${_id}`, {
+      
+        method: "PUT",
+        headers: {
+          Authorization: token,
+        },
+      
     });
     const data = await response.json();
     if (data) {
@@ -167,30 +160,37 @@ function Books() {
     } else {
       console.log("no response");
     }
-    window.location.reload(false);
+     var filtered = bookslist.filter(function (value, index, arr) {
+       return value._id != _id;
+     });
+     console.log(filtered);
+     setBooks(filtered);
   }
 
   async function requestInfo(_id) {
     await console.log("ahhhhhhhhhh: " + _id);
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:5000/Books/moreInfo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        _id,
-        token,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:5000/Books/moreInfo/${_id}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
     const data = await response.json();
     if (data) {
       console.log(data);
     } else {
       console.log("no response");
     }
-    window.location.reload(false);
+     var filtered = bookslist.filter(function (value, index, arr) {
+       return value._id != _id;
+     });
+     console.log(filtered);
+     setBooks(filtered);
   }
 
   function renderTableData() {
@@ -205,7 +205,7 @@ function Books() {
         }
       })
       .map((book) => {
-        const { bookName, cost, auth, denied, _id, moreInfo } = book;
+        const { bookName, cost, auth, denied, _id, moreInfo, userid } = book;
 
         return (
           <tr>
@@ -219,7 +219,7 @@ function Books() {
               <>
                 <td>{bookName}</td>
                 <td>{cost}</td>
-                <td>USERNAME</td>
+                <td>{userid}</td>
                 <td>
                   <Button variant="success" onClick={() => authPurchase(_id)}>
                     Click to Autherise for this user
@@ -244,7 +244,7 @@ function Books() {
               <>
                 <td>{bookName}</td>
                 <td>{cost}</td>
-                <td>USERNAME</td>
+                <td>{userid}</td>
                 <td>
                   <Button
                     variant="success"
@@ -405,20 +405,29 @@ function Books() {
         </thead>
         <tbody>{needsMoreInfoTable()}</tbody>
       </Table>
-      {moreInfoRequest && <Request currentBookID={currentBookID} />}
-      {rank == "Client" && <h1>Denied Purchases</h1>}
-      <Table striped bordered hover>
-        <thead>
-          {rank == "Client" && (
-            <tr>
-              <th>Book Name</th>
-              <th>Cost</th>
-              <th>Is Too Expensive by Admin</th>
-            </tr>
-          )}
-        </thead>
-        <tbody>{deniedPurchasesTable()}</tbody>
-      </Table>
+      {moreInfoRequest && (
+        <Request
+          currentBookID={currentBookID}
+          returnBookss={() => returnBookss()}
+        />
+      )}
+      {rank == "Client" && (
+        <>
+          <h1>Denied Purchases</h1>
+          <Table striped bordered hover>
+            <thead>
+              {rank == "Client" && (
+                <tr>
+                  <th>Book Name</th>
+                  <th>Cost</th>
+                  <th>Is Too Expensive by Admin</th>
+                </tr>
+              )}
+            </thead>
+            <tbody>{deniedPurchasesTable()}</tbody>
+          </Table>
+        </>
+      )}
       {rank == "Client" && <h1>Accepted Purchases</h1>}
       <Table striped bordered hover>
         <thead>

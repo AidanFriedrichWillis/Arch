@@ -53,11 +53,6 @@ function Request(props) {
   async function editBook() {
     const token = localStorage.getItem("token");
     const user = jwtDecode(token);
-    console.log("AFTER THEIS");
-    console.log(user.id);
-    console.log(props.currentBookID._id);
-    console.log(bookName);
-    console.log(cost);
     const bookid = props.currentBookID._id;
     const userid = user.id;
     
@@ -80,6 +75,8 @@ function Request(props) {
     } else {
       console.log("no response");
     }
+        window.location.reload(false);
+
   }
 
   async function checker(event) {

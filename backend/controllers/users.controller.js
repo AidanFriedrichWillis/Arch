@@ -64,8 +64,3 @@ module.exports.deleteUser = async (req, res) => {
     });
 };
 
-module.exports.upDateUser = async (req, res) => {
-
-
-
-}

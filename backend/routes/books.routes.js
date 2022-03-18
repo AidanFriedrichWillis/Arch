@@ -5,33 +5,32 @@ var authController = require("../middleware/auth.controller");
 
 router.post("/add", authController.validToken, booksController.add);
 
-router.post("/all", authController.validToken, booksController.alll);
+router.get("/allforuser/:id", authController.validToken, booksController.alll);
 
-router.post(
-  "/change",
+router.put(
+  "/change/:id",
   authController.validToken,
   authController.isEmployeeAdmin,
   booksController.change
 );
-router.post(
-  "/changeAuth",
+router.put(
+  "/changeAuth/:id",
   authController.validToken,
   authController.isEmployee,
   booksController.changeAuth
 );
-router.post(
-  "/denied",
+router.put(
+  "/denied/:id",
   authController.validToken,
   authController.isAdmin,
   booksController.denied
 );
-router.post(
-  "/moreInfo",
+router.put(
+  "/moreInfo/:id",
   authController.validToken,
   authController.isEmployee,
   booksController.moreInfo
 );
-router.post("/find", authController.validToken, booksController.findone);
 router.get(
   "/",
   authController.validToken,
@@ -44,9 +43,8 @@ router.get(
   authController.isAdmin,
   booksController.toExpensive
 );
-router.put(
-    "/update/:id",
-    booksController.upDateBook
-);
+router.put("/update/:id", booksController.upDateBook);
+
+router.delete("/delete/:id", authController.validToken, authController.isAdmin, booksController.deleteWhere);
 
 module.exports = router;
