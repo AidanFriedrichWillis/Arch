@@ -43,6 +43,9 @@ router.get(
   authController.isAdmin,
   booksController.toExpensive
 );
+router.get("/search"
+, booksController.findBy);
+
 router.put("/update/:id", booksController.upDateBook);
 
 router.delete("/delete/:id", authController.validToken, authController.isAdmin, booksController.deleteWhere);

@@ -156,3 +156,10 @@ module.exports.upDateBook = async (req, res) => {
     }
   );
 };
+
+
+module.exports.findBy = async (req,res) =>{
+  const by = req.query.xd
+  console.log(by);
+
+}

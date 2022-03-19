@@ -10,19 +10,25 @@ function AdminCMS() {
   let [userList, setusers] = React.useState([]);
 
   React.useEffect(() => {
-      userss();
+        userss();
+
     getUsers();
   },[]);
 
   
   async function userss() {
     const token = localStorage.getItem("token");
-    const user = jwtDecode(token);
-    if(user.rank != "Admin"){
-            window.location.href = "/";
-
+    if (!token) {
+      window.location.href = "/";
     }
-  }
+    const user = jwtDecode(token);
+    console.log("yoooooooooo");
+    if (user.rank != "Admin") {
+      window.location.href = "/";
+    }
+  }   
+
+
   async function deleteBooksFromAccount(_id,token){
 
     const response = await fetch("http://localhost:5000/Books/delete/" + _id, {
@@ -82,9 +88,11 @@ function AdminCMS() {
     } else {
       console.log("no response");
     }
+    
   }
 
    function renderTableData() {
+
      return userList.map((user) => {
        const { _id, username, rank } = user;
 
@@ -118,6 +126,7 @@ function AdminCMS() {
          </thead>
          <tbody>{renderTableData()}</tbody>
        </Table>
+       
        <Register getUsers = {()=>getUsers()} />
      </>
    );

@@ -1,38 +1,34 @@
 import React from "react";
-import Navbar from "react-bootstrap/Navbar"
+import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 
 import jwtDecode from "jwt-decode";
-
+let userName;
 function App() {
-
-
-    const [rank, setRank] = React.useState("");
-        let [userName, setName] = React.useState("");
-        let [logged, setLog] = React.useState(false);
-
+  const [rank, setRank] = React.useState("");
+  let [userName, setName] = React.useState("");
+  const [logged, setLog] = React.useState(false);
+  
   React.useEffect(() => {
     const token = localStorage.getItem("token");
-    if(token){
-    const user = jwtDecode(token);
-    if(user){
-      console.log(user)
-    setRank(user.rank);
-    setName(user.username);
-    setLog(true);
+    if (token) {
+      const user = jwtDecode(token);
+      if (user) {
+        userName = user.username
+        console.log(user);
+        setRank(user.rank);
+        setName(user.username);
+        setLog(true);
+      }
     }
+  },[]);
+
+  async function logOut() {
+    setLog(false);
+    localStorage.clear();
   }
-    });
-
-
-    async function logOut(){
-      setLog(false);
-      localStorage.clear();
-
-
-    }
   return (
     <>
       <Navbar bg="primary" variant="dark">

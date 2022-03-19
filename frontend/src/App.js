@@ -11,6 +11,8 @@ import AdminCMS from "AdminCMS";
 import Navbar from "components/Navbar"
 import Chat from 'Chat';
 import Join from 'Join';
+import SearchRequest from "SearchRequest"
+
 function App() {
 
 
@@ -31,6 +33,7 @@ function App() {
         <Route path="/adminPage" element={<AdminCMS />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/join" element={<Join />} />
+        <Route path="/search" element={<SearchRequest />} />
       </Routes>
     </div>
   );
