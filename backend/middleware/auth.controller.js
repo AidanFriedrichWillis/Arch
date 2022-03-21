@@ -22,7 +22,6 @@ module.exports.validPass = async (req, res, next) => {
 };
 
 module.exports.validToken = async (req, res, next) => {
-  console.log("1")
   let token = req.body.token || req.headers.authorization;
   if (!token) {
     return res.status(403).send({ message: "No token provided!" });
@@ -41,7 +40,7 @@ module.exports.isAdmin = async (req, res, next) => {
   if (user.rank == "Admin") {
     return next();
   } else {
-    res.send({ error: "NOT ADMIN ACCOUNT" });
+    res.status(401).send({ error: "NOT ADMIN ACCOUNT" });
   }
 };
 

@@ -6,11 +6,12 @@ const config = require("../config/auth.config");
 
 module.exports.findAll = async (req, res) => {
   User.find()
-    .then((users) => res.json(users))
+    .then((users) => res.status(200).json(users))
     .catch((err) => res.status(400).json("Error: " + err));
 };
 
 module.exports.signup = async (req, res) => {
+
   var password = req.body.password;
   password = await bcrypt.hash(password, 10);
   const rank = req.body.rank;
@@ -20,11 +21,12 @@ module.exports.signup = async (req, res) => {
 
   newUser
     .save()
-    .then(() => res.json("User added!"))
+    .then(() => res.status(200).json("User added!"))
     .catch((err) => res.status(400).json("Error: " + err));
 };
 
 module.exports.signin = async (req, res) => {
+
   const user = await User.findOne({
     username: req.body.username,
   });
@@ -89,3 +91,4 @@ module.exports.updateUser  = async(req,res) =>{
 
 
 }
+
