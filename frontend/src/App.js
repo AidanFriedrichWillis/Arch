@@ -12,18 +12,16 @@ import Navbar from "components/Navbar"
 import Chat from 'Chat';
 import Join from 'Join';
 import SearchRequest from "SearchRequest"
-
+import UpdateUser from "UpdateUser"
 function App() {
 
 
   
 
-
-
   return (
     <div>
       <Navbar />
-
+      
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -34,6 +32,7 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/join" element={<Join />} />
         <Route path="/search" element={<SearchRequest />} />
+        <Route path="/update" element={<UpdateUser />} />
       </Routes>
     </div>
   );

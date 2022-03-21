@@ -4,7 +4,7 @@ import TableUsers from "TableUsers"
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Register from "Register";
-
+import {authPage} from "Func"
 function AdminCMS() {
 
   let [userList, setusers] = React.useState([]);
@@ -17,15 +17,7 @@ function AdminCMS() {
 
   
   async function userss() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/";
-    }
-    const user = jwtDecode(token);
-    console.log("yoooooooooo");
-    if (user.rank != "Admin") {
-      window.location.href = "/";
-    }
+   authPage("Admin");
   }   
 
 

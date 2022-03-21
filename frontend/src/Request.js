@@ -1,7 +1,7 @@
-import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import jwtDecode from "jwt-decode";
+import { authPage } from "Func";
 
 function Request(props) {
   let [bookName, setBookName] = React.useState("");
@@ -12,7 +12,10 @@ function Request(props) {
   const [moreInfo, setmoreInfo] = React.useState(false);
   let [currentBookID, setcurrentBookID] = React.useState(null);
 
-  React.useEffect(() => {});
+  React.useEffect(() => {
+
+
+  });
 
   async function addBook() {
     const token = localStorage.getItem("token");
@@ -61,6 +64,7 @@ function Request(props) {
       {
         method: "PUT",
         headers: {
+          authorization: token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -90,30 +94,34 @@ function Request(props) {
 
   return (
     <>
-      <form onSubmit={checker}>
-        <br />
-        <input
-          value={bookName}
-          onChange={(e) => setBookName(e.target.value)}
-          type="text"
-          placeholder="bookname"
-        />
-        <br />
+      {authPage("Client") ? (
+        <>
+          <form onSubmit={checker}>
+            <br />
+            <input
+              value={bookName}
+              onChange={(e) => setBookName(e.target.value)}
+              type="text"
+              placeholder="bookname"
+            />
+            <br />
 
-        <input
-          value={cost}
-          onChange={(e) => setCost(e.target.value)}
-          type="text"
-          placeholder="cost"
-        />
+            <input
+              value={cost}
+              onChange={(e) => setCost(e.target.value)}
+              type="text"
+              placeholder="cost"
+            />
 
-        <br />
-        {props.currentBookID ? (
-          <input type="submit" value="Update Request" />
-        ) : (
-          <input type="submit" value="Send Request" />
-        )}
-      </form>
+            <br />
+            {props.currentBookID ? (
+              <input type="submit" value="Update Request" />
+            ) : (
+              <input type="submit" value="Send Request" />
+            )}
+          </form>
+        </>
+      ) : <h1>WRONG PERMISSIONS</h1>}
     </>
   );
 }

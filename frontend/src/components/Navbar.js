@@ -5,6 +5,7 @@ import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 
 import jwtDecode from "jwt-decode";
+import { Link } from "../../node_modules/react-router-dom/index";
 let userName;
 function App() {
   const [rank, setRank] = React.useState("");
@@ -37,25 +38,35 @@ function App() {
           <Nav className="me-auto">
             {!logged && (
               <>
-                <Nav.Link href="/login">Login</Nav.Link>
-                <Nav.Link href="/register">Register</Nav.Link>
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>
+                <Nav.Link as={Link} to="/register">
+                  Register
+                </Nav.Link>
               </>
             )}
             {logged && (
               <>
-                <Nav.Link href="/books">Book Requests</Nav.Link>
+                <Nav.Link as={Link} to="/books">
+                  Book Requests
+                </Nav.Link>
                 <Nav.Link>Welcome: {userName}</Nav.Link>
                 <Button onClick={() => logOut()}>LOG OUT</Button>
               </>
             )}
-            {rank == "Admin" && (
+            {rank == "Admin" && logged && (
               <>
-                <Nav.Link href="/adminPage">Admin Page</Nav.Link>
+                <Nav.Link as={Link} to="/adminPage">
+                  Admin Page
+                </Nav.Link>
               </>
             )}
-            {rank == "Client" && (
+            {rank == "Client" && logged && (
               <>
-                <Nav.Link href="/request">Request A Book</Nav.Link>
+                <Nav.Link as={Link} to="/request">
+                  Request A Book
+                </Nav.Link>
               </>
             )}
           </Nav>

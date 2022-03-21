@@ -6,6 +6,8 @@ import Bookcomp from "Bookcomp";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Request from "Request";
+import { authPage } from "Func";
+
 function Books() {
   const [userid, setUserid] = React.useState("");
   let [bookName, setBookName] = React.useState("");
@@ -14,7 +16,7 @@ function Books() {
   const [rank, setRank] = React.useState("");
   let [moreInfoRequest, setMoreInfoRequest] = React.useState(false);
   let [currentBookID, setcurrentBookID] = React.useState(null);
-  
+
   React.useEffect(
     () => {
       userss();

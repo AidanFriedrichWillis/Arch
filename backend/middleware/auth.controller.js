@@ -4,6 +4,8 @@ var bcrypt = require("bcryptjs");
 let User = require("../models/user");
 
 module.exports.validPass = async (req, res, next) => {
+    console.log("2");
+
   const user = await User.findOne({
     username: req.body.username,
   }).catch((err) => res.status(400).json("error" + err));
@@ -20,6 +22,7 @@ module.exports.validPass = async (req, res, next) => {
 };
 
 module.exports.validToken = async (req, res, next) => {
+  console.log("1")
   let token = req.body.token || req.headers.authorization;
   if (!token) {
     return res.status(403).send({ message: "No token provided!" });

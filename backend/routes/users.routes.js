@@ -13,4 +13,6 @@ router.get("/", authController.validToken, userController.findAll);
 router.delete("/:id", authController.validToken,authController.isAdmin, userController.deleteUser);
 // router.put("/update", authController.validToken, userController);
 router.get("/isAdmin", authController.validToken, authController.isAdmin );
+
+router.put("/update/:id", authController.validToken,authController.validPass, userController.updateUser);
 module.exports = router;

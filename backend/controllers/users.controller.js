@@ -64,3 +64,28 @@ module.exports.deleteUser = async (req, res) => {
     });
 };
 
+module.exports.updateUser  = async(req,res) =>{
+  console.log(req.params.id,req.body.newusername,req.body.newPassword)
+   if (!req.body) {
+     return res.status(400).send({
+       message: "Data to update can not be empty!",
+     });
+   }
+   const id = req.params.id;
+   const newname = req.body.newusername;
+   let newPassword = await bcrypt.hash(req.body.newPassword,10);
+
+   User.findByIdAndUpdate(
+     id,
+     { username: newname, password: newPassword},
+     function (err, result) {
+       if (err) {
+         res.send(err);
+       } else {
+         res.send(result);
+       }
+     }
+   );
+
+
+}
