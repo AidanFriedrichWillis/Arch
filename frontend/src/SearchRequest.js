@@ -1,69 +1,79 @@
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
-
+import Table from "react-bootstrap/Table"
 import { Button } from "bootstrap";
+import jwtDecode from "jwt-decode";
 
 function App(props) {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [rank, setRank] = React.useState("");
-
-  async function registerUser(event) {
+  const [cost, setcost] = React.useState("");
+  const [bookName, setBookName] = React.useState("");
+    const [bookslist, setBookslist] = React.useState([])
+  async function returnBased(event) {
     event.preventDefault();
-
-    const response = await fetch("http://localhost:5000/Books/search?limit=20&xd=1", {
-      method: "GET",
-      headers: {
-      },
-    });
+    const token = localStorage.getItem("token");
+    const user = jwtDecode(token);
+    const response = await fetch(
+      `http://localhost:5000/Books/search?bookName=${bookName}&cost=${cost}&userid${user.id}`,
+      {
+        method: "GET",
+        headers: {
+          authorization: token,
+        },
+      }
+    );
     const data = await response.json();
+    if(data){
+        await setBookslist(data)
+    }
     console.log(data);
-  
+    
   }
 
   return (
     <div>
-      <h1>Register</h1>
-      <form onSubmit={registerUser}>
+      <h1>search for book</h1>
+      <form onSubmit={returnBased}>
         <br />
         <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={bookName}
+          onChange={(e) => setBookName(e.target.value)}
           type="text"
-          placeholder="username"
+          placeholder="search by name"
         />
         <br />
         <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={cost}
+          onChange={(e) => setcost(e.target.value)}
           type="text"
-          placeholder="password"
+          placeholder="search by cost less than"
         />
         <br />
-        <input
-          value="Client"
-          onChange={(e) => setRank(e.target.value)}
-          type="radio"
-        />{" "}
-        Client
-        <br />
-        <input
-          value="Employee"
-          onChange={(e) => setRank(e.target.value)}
-          type="radio"
-        />{" "}
-        Employee
-        <br />
-        <input
-          value="Admin"
-          onChange={(e) => setRank(e.target.value)}
-          type="radio"
-        />{" "}
-        Admin
-        <br />
-        <input type="submit" value="Register" />
+
+        <input type="submit" value="Search" />
       </form>
+
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Book Name</th>
+            <th>Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bookslist.map((book) => {
+            const { bookName, cost } = book;
+            return (
+              <>
+                <tr>
+                  <td>{bookName}</td>
+                  <td>{cost}</td>
+                </tr>
+              </>
+            );
+          })}
+        </tbody>
+      </Table>
     </div>
   );
 }

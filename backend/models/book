@@ -10,7 +10,7 @@ const bookSchema = new Schema({
     minlength: 1
   },
   cost: {
-    type: String,
+    type: Number,
     required: true,
   },
   auth: {

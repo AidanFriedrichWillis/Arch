@@ -43,8 +43,8 @@ router.get(
   authController.isAdmin,
   booksController.toExpensive
 );
-router.get("/search"
-, booksController.findBy);
+router.get("/search",
+authController.validToken,authController.matchUserID, booksController.findBy);
 
 router.put("/update/:id", booksController.upDateBook);
 

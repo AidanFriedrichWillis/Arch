@@ -25,9 +25,8 @@ module.exports.add = async (req, res) => {
     .catch((err) => res.status(400).json("book req Error: " + err));
 };
 
-module.exports.alll = async (req, res) => 
-{
-    const id = req.params.id;
+module.exports.alll = async (req, res) => {
+  const id = req.params.id;
   const returnb = await Book.find({
     userid: id,
   });
@@ -39,7 +38,7 @@ module.exports.alll = async (req, res) =>
   }
 };
 module.exports.change = async (req, res) => {
-      const id = req.params.id;
+  const id = req.params.id;
 
   try {
     const book = await Book.findOne({
@@ -59,7 +58,7 @@ module.exports.change = async (req, res) => {
 };
 
 module.exports.changeAuth = async (req, res) => {
-   const id = req.params.id;
+  const id = req.params.id;
 
   try {
     const book = await Book.findOne({
@@ -74,7 +73,7 @@ module.exports.changeAuth = async (req, res) => {
 };
 
 module.exports.denied = async (req, res) => {
-     const id = req.params.id;
+  const id = req.params.id;
 
   try {
     const book = await Book.findOne({
@@ -88,7 +87,7 @@ module.exports.denied = async (req, res) => {
   }
 };
 module.exports.moreInfo = async (req, res) => {
-       const id = req.params.id;
+  const id = req.params.id;
 
   try {
     const book = await Book.findOne({
@@ -116,7 +115,7 @@ module.exports.findAll = async (req, res) => {
 };
 
 module.exports.toExpensive = async (req, res) => {
-  Book.find({ toExpensive: true, denied : false })
+  Book.find({ toExpensive: true, denied: false })
     .then((books) => res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
 };
@@ -125,14 +124,13 @@ module.exports.deleteWhere = async (req, res) => {
   console.log("delete");
   const id = req.params.id;
 
- Book.deleteMany({ userid: id })
-   .then(function () {
-     console.log("Data deleted"); // Success
-   })
-   .catch(function (error) {
-     console.log(error); // Failure
-   });
-
+  Book.deleteMany({ userid: id })
+    .then(function () {
+      console.log("Data deleted"); // Success
+    })
+    .catch(function (error) {
+      console.log(error); // Failure
+    });
 };
 
 module.exports.upDateBook = async (req, res) => {
@@ -146,7 +144,7 @@ module.exports.upDateBook = async (req, res) => {
   const cost = req.body.cost;
   Book.findByIdAndUpdate(
     id,
-    { bookName: newname, cost:cost ,moreInfo : false},
+    { bookName: newname, cost: cost, moreInfo: false },
     function (err, result) {
       if (err) {
         res.send(err);
@@ -157,9 +155,32 @@ module.exports.upDateBook = async (req, res) => {
   );
 };
 
+module.exports.findBy = async (req, res) => {
+  let searchQuery;
+  const cost = req.query.cost;
+  const bookName = req.query.bookName;
+  console.log(bookName);
+  if (bookName == "") {
+    console.log("1");
 
-module.exports.findBy = async (req,res) =>{
-  const by = req.query.xd
-  console.log(by);
+    searchQuery = { cost: { $lt: cost } };
+  } else if (req.query.cost == "") {
+    console.log("2");
 
-}
+    searchQuery = { bookName: bookName };
+  } else {
+    console.log("3");
+
+    searchQuery = {
+      bookName: bookName,
+      cost: { $lt: cost },
+    };
+  }
+    console.log(searchQuery);
+
+   await Book.find(searchQuery
+    
+  )
+    .then(async (books) => await res.json(books))
+    .catch((err) => res.status(400).json("Error: " + err));
+};

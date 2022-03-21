@@ -58,3 +58,17 @@ module.exports.isEmployeeAdmin = async (req, res, next) => {
     res.send({ error: "NOT EMPLOYEE/ADMIN ACCOUNT" });
   }
 };
+
+
+module.exports.matchUserID = async (req,res,next) => {
+  
+  const user = jwt.decode(req.body.token || req.headers.authorization);
+  if(user._id == req.query.userid){
+    return next();
+  }
+  else{
+    res.send({error: "Can not match user id"})
+  }
+
+
+}
