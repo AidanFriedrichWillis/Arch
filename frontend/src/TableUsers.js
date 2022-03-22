@@ -1,21 +1,15 @@
-import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import Register  from "Register";
+import Register from "Register";
 function App(props) {
+  React.useEffect(() => {});
 
+  async function deleteAcount(_id) {
+    const token = localStorage.getItem("token");
 
-
-  React.useEffect(() => {
-  
-  });
-
- async function deleteAcount(_id){
-         const token = localStorage.getItem("token");
-
-   const response =  await fetch("http://localhost:5000/users/" + _id, {
+    const response = await fetch("http://localhost:5000/users/" + _id, {
       method: "DELETE",
       headers: {
         Authorization: token,
@@ -27,27 +21,26 @@ function App(props) {
     } else {
       console.log("no response");
     }
-        window.location.reload(false);
-
- }
+    window.location.reload(false);
+  }
 
   function renderTableData() {
     return props.userList.map((user) => {
-      const { _id,username,rank } = user;
+      const { _id, username, rank } = user;
 
       return (
         <tr>
+          <td>{_id}</td>
+          <td>{username}</td>
+          <td>{rank}</td>
           <td>
-              {_id}
-          </td>
-          <td>
-              {username}
-          </td>
-          <td>
-              {rank}
-          </td>
-          <td>
-              <Button onClick= {()=>{deleteAcount(_id)}}>Delete ACCOUNT</Button>
+            <Button
+              onClick={() => {
+                deleteAcount(_id);
+              }}
+            >
+              Delete ACCOUNT
+            </Button>
           </td>
         </tr>
       );
@@ -65,7 +58,7 @@ function App(props) {
         </thead>
         <tbody>{renderTableData()}</tbody>
       </Table>
-      <Register/>
+      <Register />
     </>
   );
 }

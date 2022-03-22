@@ -7,7 +7,6 @@ export async function authPage(rank) {
       window.location.href = "/";
     }
     const user = jwtDecode(token);
-    console.log("yoooooooooo");
     if (user.rank != rank) {
       window.location.href = "/";
     }

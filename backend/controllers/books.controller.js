@@ -1,6 +1,17 @@
 let Book = require("../models/book");
 const jwt = require("jsonwebtoken");
 
+
+
+
+
+
+/* BOOK CONTROLLER FOLLOWING MVC DESIGNS
+USING CRUD REQUESTS TO THE NOSQL DATABSE 
+USING PROMISES ON REQUESTS
+*/
+
+//CREATES a book request 
 module.exports.add = async (req, res) => {
   const bookName = req.body.bookName;
   const cost = req.body.cost;
@@ -21,10 +32,10 @@ module.exports.add = async (req, res) => {
 
   newBook
     .save()
-    .then(() => res.json("book req Succ"))
+    .then(() => res.status(200).json("book req Succ"))
     .catch((err) => res.status(400).json("book req Error: " + err));
 };
-
+//RETURNS ALL ON USER ID
 module.exports.alll = async (req, res) => {
   const id = req.params.id;
   const returnb = await Book.find({
@@ -37,6 +48,7 @@ module.exports.alll = async (req, res) => {
     res.json("no book");
   }
 };
+//UPDATES TO EXPENSIVE
 module.exports.change = async (req, res) => {
   const id = req.params.id;
 
@@ -56,7 +68,7 @@ module.exports.change = async (req, res) => {
     res.send({ error: "failed to update tooexpensize" });
   }
 };
-
+//UPDATES AUTH
 module.exports.changeAuth = async (req, res) => {
   const id = req.params.id;
 
@@ -71,7 +83,7 @@ module.exports.changeAuth = async (req, res) => {
     res.send({ error: "failed to update auth" });
   }
 };
-
+//UPDATES DENY 
 module.exports.denied = async (req, res) => {
   const id = req.params.id;
 
@@ -86,6 +98,7 @@ module.exports.denied = async (req, res) => {
     res.send({ error: "failed to update auth" });
   }
 };
+//UPDATES MOREINFO
 module.exports.moreInfo = async (req, res) => {
   const id = req.params.id;
 
@@ -100,39 +113,34 @@ module.exports.moreInfo = async (req, res) => {
     res.send({ error: "failed to update info" });
   }
 };
-
+//READ ONE BASED ON NAME/ID
 module.exports.findone = async (req, res) => {
   Book.find({ userid: req.body.userid, bookName: req.body.bookName })
     .then((books) => res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
   (err) => res.status(401).json(err);
 };
-
+//READ ALL
 module.exports.findAll = async (req, res) => {
   Book.find({ auth: false, toExpensive: false, moreInfo: false })
     .then((books) => res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
 };
-
+//READ ALL TOOEXPENSIVE
 module.exports.toExpensive = async (req, res) => {
   Book.find({ toExpensive: true, denied: false })
     .then((books) => res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
 };
-
+//DELETE WHERE ID =ID
 module.exports.deleteWhere = async (req, res) => {
-  console.log("delete");
   const id = req.params.id;
 
   Book.deleteMany({ userid: id })
-    .then(function () {
-      console.log("Data deleted"); // Success
-    })
-    .catch(function (error) {
-      console.log(error); // Failure
-    });
+    .then(function () {})
+    .catch(function (error) {});
 };
-
+//UPDATE BOOK REQUEST
 module.exports.upDateBook = async (req, res) => {
   if (!req.body) {
     return res.status(400).send({
@@ -154,33 +162,23 @@ module.exports.upDateBook = async (req, res) => {
     }
   );
 };
-
+//READ BY PARAMETERS URL
 module.exports.findBy = async (req, res) => {
   let searchQuery;
   const cost = req.query.cost;
   const bookName = req.query.bookName;
-  console.log(bookName);
   if (bookName == "") {
-    console.log("1");
-
     searchQuery = { cost: { $lt: cost } };
   } else if (req.query.cost == "") {
-    console.log("2");
-
     searchQuery = { bookName: bookName };
   } else {
-    console.log("3");
-
     searchQuery = {
       bookName: bookName,
       cost: { $lt: cost },
     };
   }
-    console.log(searchQuery);
 
-   await Book.find(searchQuery
-    
-  )
+  await Book.find(searchQuery)
     .then(async (books) => await res.json(books))
     .catch((err) => res.status(400).json("Error: " + err));
 };

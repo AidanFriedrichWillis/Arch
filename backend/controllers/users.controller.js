@@ -4,14 +4,22 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const config = require("../config/auth.config");
 
+/* USER CONTROLLER FOLLOWING MVC DESIGNS
+USING CRUD REQUESTS TO THE NOSQL DATABSE 
+USING PROMISES ON REQUESTS
+
+*/
+
+
+
+//READ ALL 
 module.exports.findAll = async (req, res) => {
   User.find()
     .then((users) => res.status(200).json(users))
     .catch((err) => res.status(400).json("Error: " + err));
 };
-
+//CREATE AN ACCOUNT
 module.exports.signup = async (req, res) => {
-
   var password = req.body.password;
   password = await bcrypt.hash(password, 10);
   const rank = req.body.rank;
@@ -21,12 +29,11 @@ module.exports.signup = async (req, res) => {
 
   newUser
     .save()
-    .then(() => res.status(200).json("User added!"))
+    .then(() => res.status(201).json("User added!"))
     .catch((err) => res.status(400).json("Error: " + err));
 };
-
+//POST SIGN IN AND RETURN TOKEN
 module.exports.signin = async (req, res) => {
-
   const user = await User.findOne({
     username: req.body.username,
   });
@@ -42,11 +49,9 @@ module.exports.signin = async (req, res) => {
 
   return res.json({ status: "ok", user: token });
 };
-
+//DELETE USER WHERE ID=ID
 module.exports.deleteUser = async (req, res) => {
-  console.log("delete");
   const id = req.params.id;
-
   User.findByIdAndRemove(id)
     .then((data) => {
       if (!data) {
@@ -54,7 +59,7 @@ module.exports.deleteUser = async (req, res) => {
           message: `Cannot delete User with id=${id}. Maybe User was not found!`,
         });
       } else {
-        res.send({
+        res.status(200).send({
           message: "User was deleted successfully!",
         });
       }
@@ -65,30 +70,26 @@ module.exports.deleteUser = async (req, res) => {
       });
     });
 };
+//UPDATE USER WHERE ID=ID
+module.exports.updateUser = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!",
+    });
+  }
+  const id = req.params.id;
+  const newname = req.body.newusername;
+  let newPassword = await bcrypt.hash(req.body.newPassword, 10);
 
-module.exports.updateUser  = async(req,res) =>{
-  console.log(req.params.id,req.body.newusername,req.body.newPassword)
-   if (!req.body) {
-     return res.status(400).send({
-       message: "Data to update can not be empty!",
-     });
-   }
-   const id = req.params.id;
-   const newname = req.body.newusername;
-   let newPassword = await bcrypt.hash(req.body.newPassword,10);
-
-   User.findByIdAndUpdate(
-     id,
-     { username: newname, password: newPassword},
-     function (err, result) {
-       if (err) {
-         res.send(err);
-       } else {
-         res.send(result);
-       }
-     }
-   );
-
-
-}
-
+  User.findByIdAndUpdate(
+    id,
+    { username: newname, password: newPassword },
+    function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.status(200).send(result);
+      }
+    }
+  );
+};

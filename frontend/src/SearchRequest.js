@@ -1,14 +1,12 @@
-import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
-import Table from "react-bootstrap/Table"
-import { Button } from "bootstrap";
+import Table from "react-bootstrap/Table";
 import jwtDecode from "jwt-decode";
 
 function App(props) {
   const [cost, setcost] = React.useState("");
   const [bookName, setBookName] = React.useState("");
-    const [bookslist, setBookslist] = React.useState([])
+  const [bookslist, setBookslist] = React.useState([]);
   async function returnBased(event) {
     event.preventDefault();
     const token = localStorage.getItem("token");
@@ -23,11 +21,10 @@ function App(props) {
       }
     );
     const data = await response.json();
-    if(data){
-        await setBookslist(data)
+    if (data) {
+      await setBookslist(data);
     }
     console.log(data);
-    
   }
 
   return (

@@ -12,14 +12,14 @@ function Request(props) {
   const [moreInfo, setmoreInfo] = React.useState(false);
   let [currentBookID, setcurrentBookID] = React.useState(null);
 
-  React.useEffect(() => {
-
-
-  });
+  React.useEffect(() => {});
 
   async function addBook() {
+    if(bookName =="" || cost ==""){
+      window.alert("please fill all feilds")
+    }
+    else{
     const token = localStorage.getItem("token");
-    console.log(token);
     if (token) {
       const user = jwtDecode(token);
       if (user) {
@@ -47,10 +47,11 @@ function Request(props) {
         });
         const data = await response.json();
         console.log(data);
-        //   window.location.href = '/books'
       }
     } else {
       console.log("not logged in");
+    }
+
     }
   }
   async function editBook() {
@@ -58,7 +59,7 @@ function Request(props) {
     const user = jwtDecode(token);
     const bookid = props.currentBookID._id;
     const userid = user.id;
-    
+
     const response = await fetch(
       `http://localhost:5000/books/update/${bookid}`,
       {
@@ -79,8 +80,7 @@ function Request(props) {
     } else {
       console.log("no response");
     }
-        window.location.reload(false);
-
+    window.location.reload(false);
   }
 
   async function checker(event) {
@@ -121,7 +121,9 @@ function Request(props) {
             )}
           </form>
         </>
-      ) : <h1>WRONG PERMISSIONS</h1>}
+      ) : (
+        <h1>WRONG PERMISSIONS</h1>
+      )}
     </>
   );
 }

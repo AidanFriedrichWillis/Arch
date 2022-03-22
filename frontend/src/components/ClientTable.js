@@ -1,79 +1,61 @@
-import { Routes, Route, Link } from "react-router-dom";
+//IMPORTS:
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 
-
+/* 
+CLIENTTABLE COMMPONENT
+ 
+*/
 
 function App(props) {
-  // React.componentDidUpdate((prevProps) =>{
-  //     if(prevProps.key =! props.key){
-  //         bookslist = props.bookslist;
-  //         rank = props.rank;
-
-  //     }
-
-  // })
-
-    let [bookslist, setBookList] = React.useState(props.bookslist);
+  let [bookslist, setBookList] = React.useState(props.bookslist);
   let [rank, setRank] = React.useState(props.rank);
 
   React.useEffect(() => {
-    setBookList(props.bookslist)
-    setRank(props.rank)
-    console.log(bookslist)
+    setBookList(props.bookslist);
+    setRank(props.rank);
+  });
 
-  },);
+  async function makeTooExpensivee(_id) {
+    const token = localStorage.getItem("token");
 
-  
- async function makeTooExpensivee(_id) {
-   await console.log("ahhhhhhhhhh: " + _id);
+    const response = await fetch("http://localhost:5000/Books/change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _id,
+        token,
+      }),
+    });
+    const data = await response.json();
+    if (data) {
+    } else {
+    }
+  }
 
-   const token = localStorage.getItem("token");
+  async function authPurchase(_id) {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:5000/Books/changeAuth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _id,
+        token,
+      }),
+    });
+    const data = await response.json();
+    if (data) {
+    } else {
+    }
+  }
 
-   const response = await fetch("http://localhost:5000/Books/change", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-     },
-     body: JSON.stringify({
-       _id,
-       token,
-     }),
-   });
-   const data = await response.json();
-   if (data) {
-     console.log(data);
-   } else {
-     console.log("no response");
-   }
- }
-
- async function authPurchase(_id) {
-   await console.log("ahhhhhhhhhh: " + _id);
-   const token = localStorage.getItem("token");
-   const response = await fetch("http://localhost:5000/Books/changeAuth", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-     },
-     body: JSON.stringify({
-       _id,
-       token,
-     }),
-   });
-   const data = await response.json();
-   if (data) {
-     console.log(data);
-   } else {
-     console.log("no response");
-   }
- }
-  
   async function deney(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
-
     const token = localStorage.getItem("token");
 
     const response = await fetch("http://localhost:5000/Books/denied", {
@@ -88,15 +70,11 @@ function App(props) {
     });
     const data = await response.json();
     if (data) {
-      console.log(data);
     } else {
-      console.log("no response");
     }
   }
 
   async function requestInfo(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
-
     const token = localStorage.getItem("token");
 
     const response = await fetch("http://localhost:5000/Books/moreInfo", {
@@ -111,9 +89,7 @@ function App(props) {
     });
     const data = await response.json();
     if (data) {
-      console.log(data);
     } else {
-      console.log("no response");
     }
   }
 

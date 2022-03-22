@@ -1,12 +1,19 @@
-import { Routes, Route, Link } from "react-router-dom";
+//IMPORTS 
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import jwtDecode from "jwt-decode";
-import Bookcomp from "Bookcomp";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Request from "Request";
-import { authPage } from "Func";
+
+/*
+
+MY MAIN COMPONENT FOR SHOWING BOOK REQUESTS
+THESE CHANGE BASED ON USER RANK
+
+
+*/
+
 
 function Books() {
   const [userid, setUserid] = React.useState("");
@@ -37,15 +44,11 @@ function Books() {
   async function userss() {
     const token = localStorage.getItem("token");
     const newuser = jwtDecode(token);
-    console.log(newuser);
     setUserid(newuser.id);
-    console.log(userid);
     setRank(newuser.rank);
   }
 
   async function makeTooExpensivee(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
-
     const token = localStorage.getItem("token");
 
     const response = await fetch(`http://localhost:5000/Books/change/${_id}`, {
@@ -60,15 +63,14 @@ function Books() {
     } else {
       console.log("no response");
     }
-     var filtered = bookslist.filter(function (value, index, arr) {
-       return value._id != _id;
-     });
-     console.log(filtered);
-     setBooks(filtered);
+    var filtered = bookslist.filter(function (value, index, arr) {
+      return value._id != _id;
+    });
+    console.log(filtered);
+    setBooks(filtered);
   }
 
   async function authPurchase(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
     const token = localStorage.getItem("token");
     const response = await fetch(
       `http://localhost:5000/Books/changeAuth/${_id}`,
@@ -85,15 +87,14 @@ function Books() {
     } else {
       console.log("no response");
     }
-     var filtered = bookslist.filter(function (value, index, arr) {
-       return value._id != _id;
-     });
-     console.log(filtered);
-     setBooks(filtered);
+    var filtered = bookslist.filter(function (value, index, arr) {
+      return value._id != _id;
+    });
+    console.log(filtered);
+    setBooks(filtered);
   }
 
   async function returnUnauthBooks() {
-    console.log("HEllo");
     const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:5000/Books/", {
       method: "GET",
@@ -149,12 +150,10 @@ function Books() {
   async function deney(_id) {
     const token = localStorage.getItem("token");
     const response = await fetch(`http://localhost:5000/Books/denied/${_id}`, {
-      
-        method: "PUT",
-        headers: {
-          Authorization: token,
-        },
-      
+      method: "PUT",
+      headers: {
+        Authorization: token,
+      },
     });
     const data = await response.json();
     if (data) {
@@ -162,15 +161,14 @@ function Books() {
     } else {
       console.log("no response");
     }
-     var filtered = bookslist.filter(function (value, index, arr) {
-       return value._id != _id;
-     });
-     console.log(filtered);
-     setBooks(filtered);
+    var filtered = bookslist.filter(function (value, index, arr) {
+      return value._id != _id;
+    });
+    console.log(filtered);
+    setBooks(filtered);
   }
 
   async function requestInfo(_id) {
-    await console.log("ahhhhhhhhhh: " + _id);
     const token = localStorage.getItem("token");
 
     const response = await fetch(
@@ -188,11 +186,11 @@ function Books() {
     } else {
       console.log("no response");
     }
-     var filtered = bookslist.filter(function (value, index, arr) {
-       return value._id != _id;
-     });
-     console.log(filtered);
-     setBooks(filtered);
+    var filtered = bookslist.filter(function (value, index, arr) {
+      return value._id != _id;
+    });
+    console.log(filtered);
+    setBooks(filtered);
   }
 
   function renderTableData() {
@@ -210,7 +208,7 @@ function Books() {
         const { bookName, cost, auth, denied, _id, moreInfo, userid } = book;
 
         return (
-          <tr>
+          <tr key={_id}>
             {rank == "Client" && !auth && !denied && !moreInfo && (
               <>
                 <td>{bookName}</td>
@@ -269,15 +267,15 @@ function Books() {
 
   async function changeMoreInfoState(book) {
     setMoreInfoRequest(!moreInfoRequest);
-    setcurrentBookID(book)
+    setcurrentBookID(book);
   }
 
   function deniedPurchasesTable() {
     return bookslist.map((book) => {
-      const { bookName, cost, denied } = book;
+      const { bookName, cost, denied, _id } = book;
 
       return (
-        <tr>
+        <tr key={_id}>
           {denied && (
             <>
               <td>{bookName}</td>
@@ -294,7 +292,7 @@ function Books() {
       const { bookName, cost, denied, moreInfo, _id } = book;
 
       return (
-        <tr>
+        <tr key={_id}>
           {moreInfo && (
             <>
               <td>{bookName}</td>
@@ -313,10 +311,10 @@ function Books() {
 
   function acceptedPurchasesTable() {
     return bookslist.map((book) => {
-      const { bookName, cost, auth } = book;
+      const { bookName, cost, auth, _id } = book;
 
       return (
-        <tr>
+        <tr key={_id}>
           {auth && (
             <>
               <td>{bookName}</td>
@@ -335,13 +333,12 @@ function Books() {
         <div classname="card card-container">
           <form className="form-horizontal">
             <div className="form-group">
-              <label className="sr-only" for="email">
+              <label className="sr-only">
                 Book Name:
               </label>
               <input
                 className="form-control"
                 id="searchTerm"
-                input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"

@@ -2,7 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import jwtDecode from "jwt-decode";
 
-
 function App(props) {
   const [newusername, setUsernme] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -18,19 +17,22 @@ function App(props) {
         method: "PUT",
         headers: {
           authorization: token,
-          "Content-Type" : "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username,
           newusername,
           password,
-          newPassword
-        })
+          newPassword,
+        }),
       }
     );
     const data = await response.json();
     if (data) {
       console.log(data);
+      localStorage.clear();
+      window.alert("Please Log In Again");
+      window.location.href = "/";
     }
   }
 
@@ -62,8 +64,6 @@ function App(props) {
 
         <input type="submit" value="Change" />
       </form>
-
-      
     </div>
   );
 }
