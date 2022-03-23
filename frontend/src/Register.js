@@ -27,7 +27,7 @@ function App(props) {
       if (props.getUsers) {
         props.getUsers();
       } else {
-        alert("Login Successful");
+        alert("register Successful");
         window.location.href = "/";
       }
     }

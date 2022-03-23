@@ -28,7 +28,7 @@ module.exports.signup = async (req, res) => {
   const newUser = new User({ username, password, rank });
 
   newUser
-    .save()
+    .save()         
     .then(() => res.status(201).json("User added!"))
     .catch((err) => res.status(400).json("Error: " + err));
 };

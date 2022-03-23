@@ -23,8 +23,8 @@ app.use(cors());
 io.on("connection", (socket) => {
   socket.on("sendMessage", (message, callback) => {
     const returnmes =
-      message.rank + " " + message.username + ": " + message.message;
-    io.emit("message", returnmes);
+      message;
+    io.emit("message", message);
   });
 });
 //DEFINING THE PORT NUMBER

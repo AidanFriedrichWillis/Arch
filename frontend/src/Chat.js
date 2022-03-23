@@ -5,14 +5,10 @@ import { authPage } from "Func";
 let socket;
 
 function Chat({ locaiton }) {
-  const token = localStorage.getItem("token");
-  let user;
-  if (token) {
-    user = jwtDecode(token);
-  }
 
-  const username = user.username;
-  const rank = user.rank;
+  
+
+
   const [message, setMessage] = useState("");
   const [meshistory, setmeshistory] = useState([]);
 
@@ -32,7 +28,7 @@ function Chat({ locaiton }) {
     e.preventDefault();
 
     if (message) {
-      socket.emit("sendMessage", { message, username, rank });
+      socket.emit("sendMessage", message);
     }
   }
 

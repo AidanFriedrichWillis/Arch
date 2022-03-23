@@ -47,6 +47,8 @@ function Request(props) {
         });
         const data = await response.json();
         console.log(data);
+         alert("Book request made");
+         window.location.href = "/";
       }
     } else {
       console.log("not logged in");
@@ -77,10 +79,12 @@ function Request(props) {
     const data = await response.json();
     if (data) {
       console.log(data);
+      
     } else {
       console.log("no response");
     }
-    window.location.reload(false);
+    props.returnBookss();
+    props.setMoreInfoRequest();
   }
 
   async function checker(event) {

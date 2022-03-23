@@ -333,9 +333,7 @@ function Books() {
         <div classname="card card-container">
           <form className="form-horizontal">
             <div className="form-group">
-              <label className="sr-only">
-                Book Name:
-              </label>
+              <label className="sr-only">Book Name:</label>
               <input
                 className="form-control"
                 id="searchTerm"
@@ -408,6 +406,7 @@ function Books() {
         <Request
           currentBookID={currentBookID}
           returnBookss={() => returnBookss()}
+          setMoreInfoRequest={() => setMoreInfoRequest()}
         />
       )}
       {rank == "Client" && (
